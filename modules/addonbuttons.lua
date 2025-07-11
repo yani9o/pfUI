@@ -28,9 +28,24 @@ pfUI:RegisterModule("addonbuttons", "vanilla:tbc", function ()
     "RecipeRadarMinimapIcon",
     "MiniMapTracking",
     "CartographerNotesPOI",
-    "LFTMinimapButton",
-    "AtlasLootMinimapButton"
+	"LFTMinimapButton",
+	"AtlasLootMinimapButton"
   }
+  
+  local IGNORED_ICON_SCALE = 0.75 -- Change this value to your desired scale
+
+  local function ScaleIgnoredIcons()
+    for _, child in ipairs({Minimap:GetChildren()}) do
+      if child and child.GetName and child:GetName() then
+  	    local name = child:GetName()
+  	    for _, ignore in ipairs(ignored_icons) do
+  	      if string.find(name, ignore) then
+  	        child:SetScale(IGNORED_ICON_SCALE)
+  	      end
+  	    end
+  	  end
+    end
+  end
 
   pfUI.addonbuttons = CreateFrame("Frame", "pfMinimapButtons", UIParent)
   pfUI.addonbuttons:SetFrameStrata("HIGH")
@@ -158,6 +173,7 @@ pfUI:RegisterModule("addonbuttons", "vanilla:tbc", function ()
   local function ScanForButtons()
     FindButtons(Minimap)
     FindButtons(MinimapBackdrop)
+	ScaleIgnoredIcons() -- Rescale all ignored icons
   end
 
   local function SetupMainFrame()
