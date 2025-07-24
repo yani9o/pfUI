@@ -2646,7 +2646,7 @@ function pfUI.uf.GetColor(self, preset)
     b = GetDifficultyColor(UnitLevel(unitstr)).b
   end
 
-  if C.unitframes.pastel == "1" then
+  if C.unitframes.pastel == "1" and not (preset == "unit" and config["classcolor"] == "1" and UnitIsPlayer(unitstr)) then
     r, g, b = (r + .75) * .5, (g + .75) * .5, (b + .75) * .5
   end
 
