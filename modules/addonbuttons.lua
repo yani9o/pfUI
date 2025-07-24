@@ -27,8 +27,9 @@ pfUI:RegisterModule("addonbuttons", "vanilla:tbc", function ()
     "FWGMinimapPOI",
     "RecipeRadarMinimapIcon",
     "MiniMapTracking",
-    "CartographerNotesPOI"	"LFTMinimapButton",
-	"AtlasLootMinimapButton"
+    "CartographerNotesPOI",
+    "LFTMinimapButton",
+    "AtlasLootMinimapButton"
   }
 
   local IGNORED_ICON_SCALE = 0.75 -- Change this value to your desired scale
