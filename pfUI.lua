@@ -414,3 +414,29 @@ function pfUI.SetupCVars()
   COMBAT_TEXT_SHOW_HONOR_GAINED = "1"
   UIParentLoadAddOn("Blizzard_CombatText")
 end
+
+-- Suppress certain errors (less error spam)
+local suppressedErrors = {
+    ["Invalid target"] = true,
+    ["Unknown unit."] = true,
+    ["Must be in Cat Form"] = true,
+    ["Must be in Bear Form, Dire Bear Form"] = true,
+    ["Must be in Cat Form, Bear Form, Dire Bear Form"] = true,
+    ["You are in shapeshift form"] = true,
+    ["Can't speak while shapeshifted."] = true,
+	["You can't do that while shapeshifted."] = true,
+    ["Can only use while swimming"] = true,
+	["Cannot use while swimming"] = true,
+    ["You are mounted"] = true,
+}
+
+-- Save original function
+local originalErrorFunc = UIErrorsFrame.AddMessage
+
+-- Override
+UIErrorsFrame.AddMessage = function(self, msg, r, g, b, id)
+    -- DEFAULT_CHAT_FRAME:AddMessage("Error caught: " .. tostring(msg))
+    if not suppressedErrors[msg] then
+        originalErrorFunc(self, msg, r, g, b, id)
+    end
+end
