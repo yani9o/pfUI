@@ -39,6 +39,30 @@ local spells = {
   },
 }
 
+local offensive_spells = {
+  ["DRUID"] = {
+    "Interface\\Icons\\Spell_Nature_AbolishMagic",		 -- Wrath
+    "Interface\\Icons\\Spell_Arcane_StarFire",    	 	-- Starfire
+  },
+  ["PRIEST"] = {
+    "Interface\\Icons\\Spell_Holy_HolySmite",          	-- Smite
+    "Interface\\Icons\\Spell_Shadow_ShadowWordPain", 	-- Shadow Word: Pain
+  },
+  ["SHAMAN"] = {
+    "Interface\\Icons\\Spell_Nature_Lightning",     	-- Lightning Bolt
+    "Interface\\Icons\\Spell_Nature_ChainLightning",	-- Chain Lightning
+  },
+  ["MAGE"] = {
+    "Interface\\Icons\\Spell_Frost_FrostBolt02",    	-- Frostbolt
+    "Interface\\Icons\\Spell_Fire_FlameBolt",       	-- Fireball
+    "Interface\\Icons\\Spell_Arcane_Blast",         	-- Arcane Missiles
+  },
+  ["WARLOCK"] = {
+    "Interface\\Icons\\Spell_Shadow_ShadowBolt",    	-- Shadow Bolt
+    "Interface\\Icons\\Spell_Shadow_Corruption",    	-- Corruption
+  },
+}
+
 -- use native IsSpellInRange checker for tbc and skip
 -- the whole targeting approach that is required for vanilla
 if pfUI.expansion == "tbc" then
@@ -246,13 +270,17 @@ function librange:GetRealUnit(unit)
   return unit
 end
 
-function librange:GetRangeSlot()
+function librange:GetRangeSlot(unit)
   local texture
+  local isEnemy = UnitCanAttack("player", unit or "target")
+  local spellList = isEnemy and offensive_spells[class] or spells[class]
+
+  if not spellList then return nil end
 
   for i=1,120 do
     texture = GetActionTexture(i)
     if texture and not GetActionText(i) then
-      for _, check in pairs(spells[class]) do
+      for _, check in pairs(spellList) do
         if check == texture then
           return i
         end
@@ -264,17 +292,20 @@ function librange:GetRangeSlot()
 end
 
 function librange:UnitInSpellRange(unit)
-  if not librange.slot then return nil end
+  local isEnemy = UnitCanAttack("player", unit)
+  local slot = self:GetRangeSlot(unit)
+
+  if not slot then return nil end
 
   if UnitIsUnit("target", unit) then
-    return IsActionInRange(librange.slot) == 1 and 1 or nil
+    return IsActionInRange(slot) == 1 and 1 or nil
   end
 
-  local unit = librange:GetRealUnit(unit)
+  local real = self:GetRealUnit(unit)
 
-  if unitdata[unit] and unitdata[unit] == 1 then
+  if unitdata[real] and unitdata[real] == 1 then
     return 1
-  elseif not unitdata[unit] then
+  elseif not unitdata[real] then
     return 1
   else
     return nil
