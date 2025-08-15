@@ -1401,6 +1401,24 @@ pfUI:RegisterModule("actionbar", "vanilla:tbc", function ()
       bars[i]:SetPoint("BOTTOM", bars[6], "TOP", 0, 3*border)
     elseif i == 12 then -- pet
       bars[i]:SetPoint("BOTTOM", bars[6], "TOP", 0, 3*border)
+
+      -- make stance bar dodge by default
+      bars[i]:SetScript("OnShow", function()
+        if bars[11] and bars[11]:IsShown() then
+          bars[11]:ClearAllPoints()
+          bars[11]:SetPoint("BOTTOM", bars[12], "TOP", 0, 3*border)
+          UpdateMovable(bars[11], true)
+        end
+      end)
+
+      -- restore old stance bar position
+      bars[i]:SetScript("OnHide", function()
+        if bars[11] and bars[11]:IsShown() then
+          bars[11]:ClearAllPoints()
+          bars[11]:SetPoint("BOTTOM", bars[6], "TOP", 0, 3*border)
+          UpdateMovable(bars[11], true)
+        end
+      end)
     else -- others
       bars[i]:SetPoint("TOP", 0, -i*50)
     end
@@ -1435,8 +1453,14 @@ pfUI:RegisterModule("actionbar", "vanilla:tbc", function ()
           and C.bars.bar1.buttons == C.bars.bar6.buttons
         then
           bars[1].mergedBackdrop:Show()
-          bars[1].backdrop:Hide()
-          bars[6].backdrop:Hide()
+
+          if C.bars.bar1.background == "1" and bars[1].backdrop then
+            bars[1].backdrop:Hide()
+          end
+
+          if C.bars.bar6.background == "1" and bars[6].backdrop then
+            bars[6].backdrop:Hide()
+          end
         else
           bars[1].mergedBackdrop:Hide()
 
