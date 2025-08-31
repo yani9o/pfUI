@@ -193,13 +193,13 @@ pfUI:RegisterModule("gui", "vanilla:tbc", function ()
           local preview = this.prev
 
           function ColorPickerFrame.func()
-            local r,g,b = ColorPickerFrame:GetColorRGB()
+            local r, g, b = ColorPickerFrame:GetColorRGB()
             local a = 1 - OpacitySliderFrame:GetValue()
 
-            r = round(r, 1)
-            g = round(g, 1)
-            b = round(b, 1)
-            a = round(a, 1)
+            r = round(r, 3)
+            g = round(g, 3)
+            b = round(b, 3)
+            a = round(a, 3)
 
             preview:SetTexture(r,g,b,a)
 
@@ -1405,6 +1405,7 @@ pfUI:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(function() return end, T["Select profile"], C.global, "profile", "dropdown", function()
         local values = {}
         for name, config in pairs(pfUI_profiles) do table.insert(values, name) end
+        table.sort(values)
         return values
       end, false, "Profile")
 
